@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS-PET | Tranquilidad en tiempo real para tu mascota</title>
+  
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet CSS (Mapa) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-paw"></i></div>
+        <span class="logo-text">GPS-PET<span class="dot">.</span></span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="#mapa-demo" class="active"><i class="fa-solid fa-map-location-dot"></i> Radar GPS</a></li>
+        <li><a href="#caracteristicas"><i class="fa-solid fa-shield-cat"></i> Funciones</a></li>
+        <li><a href="#comunidad"><i class="fa-solid fa-users"></i> Red Alerta</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-danger" id="btnAlertEmergency">
+          <i class="fa-solid fa-triangle-exclamation"></i> Reportar Extravío
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="badge"><i class="fa-solid fa-bolt"></i> Rastreo satelital instantáneo</div>
+        <h1>Nunca le pierdas la pista a quien <span class="highlight">más amas</span></h1>
+        <p>Monitoreo GPS en tiempo real, alertas de zonas seguras y una comunidad lista para ayudarte a proteger a tu mejor amigo en todo momento.</p>
+        
+        <div class="hero-buttons">
+          <a href="#mapa-demo" class="btn btn-primary btn-lg"><i class="fa-solid fa-satellite"></i> Probar Mapa en Vivo</a>
+          <button class="btn btn-outline btn-lg" id="btnOpenCardGen"><i class="fa-solid fa-qrcode"></i> Ficha QR Digital</button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">99.8%</span>
+            <span class="stat-label">Precisión GPS</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">&lt; 3 seg</span>
+            <span class="stat-label">Actualización</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">+15k</span>
+            <span class="stat-label">Mascotas protegidas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="pet-status-card">
+          <div class="status-header">
+            <div class="pet-avatar-wrapper">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=200" alt="Mascota" class="pet-avatar">
+              <span class="status-indicator online"></span>
+            </div>
+            <div class="pet-info">
+              <h3>Max <span class="breed"> Golden Retriever</span></h3>
+              <p class="location-text"><i class="fa-solid fa-location-dot"></i> Parque Central - Zona Segura</p>
+            </div>
+          </div>
+          
+          <div class="status-metrics">
+            <div class="metric">
+              <i class="fa-solid fa-battery-three-quarters text-success"></i>
+              <span>Batería: 88%</span>
+            </div>
+            <div class="metric">
+              <i class="fa-solid fa-person-walking text-primary"></i>
+              <span>Actividad: 3.4 km</span>
+            </div>
+            <div class="metric">
+              <i class="fa-solid fa-signal text-success"></i>
+              <span>Señal: Excelente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECCIÓN DEMO MAPA EN VIVO -->
+  <section id="mapa-demo" class="section map-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Simulador de <span class="highlight">Rastreo GPS</span> en Vivo</h2>
+        <p>Experimenta cómo funciona el monitoreo satelital en tiempo real con geocercas inteligentes.</p>
+      </div>
+
+      <div class="map-wrapper">
+        <!-- Panel de Control del Mapa -->
+        <div class="map-controls">
+          <div class="control-header">
+            <h3><i class="fa-solid fa-sliders"></i> Panel de Control</h3>
+            <span class="live-badge"><span class="pulse-dot"></span> EN VIVO</span>
+          </div>
+
+          <div class="control-group">
+            <label>Mascota a Monitorear:</label>
+            <div class="pet-select-buttons">
+              <button class="btn-pet-select active" data-pet="max">
+                <i class="fa-solid fa-dog"></i> Max (Perro)
+              </button>
+              <button class="btn-pet-select" data-pet="luna">
+                <i class="fa-solid fa-cat"></i> Luna (Gata)
+              </button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="switch-label">
+              <span>Zona Segura (Geocerca)</span>
+              <input type="checkbox" id="toggleGeofence" checked>
+              <span class="slider"></span>
+            </label>
+            <p class="help-text">Recibe alertas instantáneas si la mascota sale de este radio.</p>
+          </div>
+
+          <div class="control-group">
+            <button class="btn btn-warning w-100" id="btnSimulateEscape">
+              <i class="fa-solid fa-person-running"></i> Simular Salida de Zona
+            </button>
+          </div>
+
+          <div class="pet-live-logs" id="liveLogs">
+            <div class="log-entry log-info"><i class="fa-solid fa-circle-info"></i> Sistema GPS iniciado activamente.</div>
+            <div class="log-entry log-success"><i class="fa-solid fa-shield-check"></i> Mascota dentro de Zona Segura.</div>
+          </div>
+        </div>
+
+        <!-- Contenedor del Mapa Leaflet -->
+        <div class="map-container-box">
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARACTERÍSTICAS -->
+  <section id="caracteristicas" class="section bg-light">
+    <div class="container">
+      <div class="section-title">
+        <h2>¿Por qué elegir <span class="highlight">GPS-PET</span>?</h2>
+        <p>Diseñado con tecnología de punta para darte tranquilidad 24/7.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-map-pin"></i></div>
+          <h3>GPS Satelital + LBS</h3>
+          <p>Ubicación exacta de alta precisión combinando múltiples redes globales de posicionamiento.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-draw-polygon"></i></div>
+          <h3>Geocercas Dinámicas</h3>
+          <p>Dibuja límites virtuales alrededor de tu casa, parque o veterinaria y recibe avisos al instante.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-bell-concierge"></i></div>
+          <h3>Modo Emergencia</h3>
+          <p>Alerta a toda la comunidad de usuarios en un radio cercano si tu mascota se extravía.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-qrcode"></i></div>
+          <h3>Placa Digital Inteligente</h3>
+          <p>Código QR escaneable por cualquier smartphone con el perfil médico y de contacto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RED COMUNITARIA / MASCOTAS PERDIDAS -->
+  <section id="comunidad" class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Red de <span class="highlight">Búsqueda Comunitaria</span></h2>
+        <p>Alertas activas recientes emitidas por la comunidad cercana.</p>
+      </div>
+
+      <div class="feed-grid" id="lostPetsFeed">
+        <!-- Se llena dinámicamente con JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-icon"><i class="fa-solid fa-paw"></i></div>
+          <span class="logo-text">GPS-PET<span class="dot">.</span></span>
+        </a>
+        <p>Cuidando a los que más amas con la mejor tecnología satelital.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navegación</h4>
+        <a href="#mapa-demo">Mapa en Vivo</a>
+        <a href="#caracteristicas">Funciones</a>
+        <a href="#comunidad">Comunidad</a>
+      </div>
+      <div class="footer-social">
+        <h4>Síguenos</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 GPS-PET. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- MODAL: REPORTAR EMERGENCIA -->
+  <div class="modal" id="modalEmergency">
+    <div class="modal-content">
+      <button class="modal-close" id="btnCloseModal">&times;</button>
+      <div class="modal-header text-danger">
+        <i class="fa-solid fa-triangle-exclamation modal-icon"></i>
+        <h2>Reportar Mascota Extraviada</h2>
+      </div>
+      <p>Al enviar este reporte, se emitirá una alerta comunitaria a los usuarios GPS-PET cercanos.</p>
+      
+      <form id="formEmergency">
+        <div class="form-group">
+          <label for="petName">Nombre de la Mascota *</label>
+          <input type="text" id="petName" required placeholder="Ej: Toby">
+        </div>
+        <div class="form-group">
+          <label for="petType">Especie / Raza *</label>
+          <input type="text" id="petType" required placeholder="Ej: Perro Beagle / Gato Siames">
+        </div>
+        <div class="form-group">
+          <label for="lastLocation">Última Ubicación Vistas *</label>
+          <input type="text" id="lastLocation" required placeholder="Ej: Calle 45 con Av. Principal">
+        </div>
+        <div class="form-group">
+          <label for="contactPhone">Teléfono de Contacto *</label>
+          <input type="tel" id="contactPhone" required placeholder="+57 300 123 4567">
+        </div>
+        <button type="submit" class="btn btn-danger w-100">
+          <i class="fa-solid fa-bullhorn"></i> Emitir Alerta de Emergencia
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: GENERADOR DE FICHA QR -->
+  <div class="modal" id="modalCardGen">
+    <div class="modal-content">
+      <button class="modal-close" id="btnCloseCardModal">&times;</button>
+      <div class="modal-header">
+        <i class="fa-solid fa-id-card modal-icon text-primary"></i>
+        <h2>Ficha Digital de Mascota</h2>
+      </div>
+      
+      <div class="poster-preview" id="posterCard">
+        <div class="poster-badge">¡ESCANEÁME SI ME ENCUENTRAS!</div>
+        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=300" alt="Mascota" class="poster-img">
+        <h3 class="poster-name">MAX</h3>
+        <p class="poster-desc">Golden Retriever - 3 Años</p>
+        <div class="qr-placeholder">
+          <i class="fa-solid fa-qrcode"></i>
+          <span>GPS-PET ID: #88392</span>
+        </div>
+        <p class="poster-phone"><i class="fa-solid fa-phone"></i> Contacto: 555-0192</p>
+      </div>
+
+      <button class="btn btn-primary w-100 mt-3" onclick="alert('Descargando ficha en PDF...')">
+        <i class="fa-solid fa-download"></i> Descargar Ficha PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Custom JS -->
+  <script src="script.js"></script>
+</body>
+</html>
